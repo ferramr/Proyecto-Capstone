@@ -25,6 +25,8 @@ En la figura 2 se muestra el diagrama a bloques detallado del proyecto.
 
 ![image](https://user-images.githubusercontent.com/87343531/156824026-ae34a20f-3cbc-4a94-a78f-b2e1878d0ff1.png)
 
+Figura 2. Diagrama a bloques detallado del proyecto
+
 En la figura anterior se pueden observar los siguientes módulos:
 
 1-USUARIO.- El usuario participa en las siguientes tres funciones:
