@@ -1,0 +1,1367 @@
+[
+    {
+        "id": "ac492997f0183881",
+        "type": "tab",
+        "label": "Palno Inclinado 80",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "8d02ee05c51a6c52",
+        "type": "ui_template",
+        "z": "ac492997f0183881",
+        "group": "c7a27394.057878",
+        "name": "CSS",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    canvas.chart.chart-line {\n        height:calc(100%) !important;\n        width: calc(100%) !important;\n        background-image:linear-gradient(0.5turn, #f69d3c00,#f69d3c20, #f69d3c00);\n    }\n    \n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "global",
+        "x": 910,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "52bab7c0796c8e58",
+        "type": "mqtt in",
+        "z": "ac492997f0183881",
+        "name": "estado",
+        "topic": "python/mqtt/estado",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "aa3107cbb6f29f72",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 110,
+        "y": 940,
+        "wires": [
+            [
+                "d4c0a0994865fedb"
+            ]
+        ]
+    },
+    {
+        "id": "d4c0a0994865fedb",
+        "type": "json",
+        "z": "ac492997f0183881",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 250,
+        "y": 940,
+        "wires": [
+            [
+                "ecc6cc184b237bf8",
+                "c3d7cf0e72dab5b1",
+                "7d352b5eb81f4426",
+                "b8cede7d9aa646cf",
+                "3f76e3eb695dd69e",
+                "ad240d35b5f15836",
+                "01cfa04946fb550a",
+                "477c3de431d423c8",
+                "fae290e0560d7c7d"
+            ]
+        ]
+    },
+    {
+        "id": "3a05f1952a5ffbab",
+        "type": "mqtt in",
+        "z": "ac492997f0183881",
+        "name": "desplazamiento",
+        "topic": "python/mqtt/desplazamiento",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "aa3107cbb6f29f72",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 160,
+        "y": 160,
+        "wires": [
+            [
+                "2022bbcfa768a234"
+            ]
+        ]
+    },
+    {
+        "id": "2022bbcfa768a234",
+        "type": "json",
+        "z": "ac492997f0183881",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 330,
+        "y": 160,
+        "wires": [
+            [
+                "448120e9579c7008",
+                "171992a1dfb671be"
+            ]
+        ]
+    },
+    {
+        "id": "448120e9579c7008",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "d(t)",
+        "func": "data = msg.payload\n\nmsg.payload = [{\n    \"series\": [\"d(t) [m] \"],\n    \"xAxisID\": 'custom-x-axis',\n    \"yAxisID\": 'custom-y-axis',\n    \"data\": [data],\n    \"labels\": [\"\"]\n}]\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 160,
+        "wires": [
+            [
+                "32916551ee1f513b"
+            ]
+        ]
+    },
+    {
+        "id": "171992a1dfb671be",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "Ajustes de Graficas",
+        "func": "// --- Color de lineas de cuadricula ---\nlet gridcolors = 'rgba(0, 0, 0, 0.3)' //'rgba(255, 160, 0, 0.3)'\nmsg.ui_control = {\n    options: {\n        legend: {\n            // --- Cuadro de color de la grafica ---\n            display: false\n        },\n        tooltips: {\n            // --- Despliega coordenadas al pasar el cursor ---\n            enabled: true\n        },\n        scales: {\n            xAxes: [{\n                type: 'linear',\n                id: 'custom-x-axis',\n                position:'bottom',\n                padding:100,\n                gridLines:{\n                    color:gridcolors,\n                    zeroLineColor:'rgba(123, 113, 113, 0.75)',\n                    // --- Longitud de pequeñas lineas que\n                    // salen del eje horizontal hacia abajo\n                    // alineadas con las acotaciones y las\n                    // lineas de cuadricula verticales\n                    tickMarkLength:3, // 7,\n                    drawTicks:true\n                },\n                ticks: {\n                    // --- Color de acotacion en eje \"x\" ---\n                    fontColor:\"#000\", // \"#ccc\",\n                    // --- Xmin, Xmax ---\n                    max: 1.2, //20,\n                    min: 0,\n                    // --- Cuadricula Lineas Verticales ---\n                    stepSize: 0.2 //5\n                   \n                }\n            }],\n            yAxes: [{\n                id: 'custom-y-axis',\n                \n                gridLines:{\n                    // --- Color de lineas horizontales ---\n                    color:gridcolors,\n                    zeroLineColor:'red',\n                    // --- Longitud de pequeñas lineas que\n                    // salen del eje vertical a la izquierda\n                    // alineadas con las acotaciones y las\n                    // lineas de cuadricula horizontales\n                    tickMarkLength:3, //5,\n                    drawTicks:true // false\n                },\n                ticks: {\n                    // --- Color de acotacion en eje \"y\" ---\n                    fontColor:\"#000\", //\"#ccc\",\n                    // --- Ymin, Ymax ---\n                    max: 0.40, //30,\n                    min: 0, //-10,\n                    // --- Cuadricula Lineas Horizontales\n                    stepSize: 0.1 //5\n                }\n            }]\n       }\n    }\n}\ndelete msg.payload\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 200,
+        "wires": [
+            [
+                "32916551ee1f513b"
+            ]
+        ]
+    },
+    {
+        "id": "32916551ee1f513b",
+        "type": "ui_chart",
+        "z": "ac492997f0183881",
+        "name": "",
+        "group": "951f5cadc3efb406",
+        "order": 1,
+        "width": "7",
+        "height": "4",
+        "label": "Desplazamiento: d(t)   [m]",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "0",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "0",
+        "ymax": "0.4",
+        "removeOlder": "24",
+        "removeOlderPoints": "0",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": true,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "x": 850,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0af48de18b6351ac",
+        "type": "mqtt in",
+        "z": "ac492997f0183881",
+        "name": "velocidad",
+        "topic": "python/mqtt/velocidad",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "aa3107cbb6f29f72",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 140,
+        "y": 260,
+        "wires": [
+            [
+                "d9ef8817f75ddd99"
+            ]
+        ]
+    },
+    {
+        "id": "d9ef8817f75ddd99",
+        "type": "json",
+        "z": "ac492997f0183881",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 330,
+        "y": 260,
+        "wires": [
+            [
+                "77943de97ced31dd",
+                "959f12d6a1fcb16d"
+            ]
+        ]
+    },
+    {
+        "id": "77943de97ced31dd",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "v(t)",
+        "func": "data = msg.payload\n\nmsg.payload = [{\n    \"series\": [\"v(t) [m/s] \"],\n    \"xAxisID\": 'custom-x-axis',\n    \"yAxisID\": 'custom-y-axis',\n    \"data\": [data],\n    \"labels\": [\"\"]\n}]\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 260,
+        "wires": [
+            [
+                "2e7c37b5c9508803"
+            ]
+        ]
+    },
+    {
+        "id": "959f12d6a1fcb16d",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "Ajustes de Graficas",
+        "func": "// --- Color de lineas de cuadricula ---\nlet gridcolors = 'rgba(0, 0, 0, 0.3)' //'rgba(255, 160, 0, 0.3)'\nmsg.ui_control = {\n    options: {\n        legend: {\n            // --- Cuadro de color de la grafica ---\n            display: false\n        },\n        tooltips: {\n            // --- Despliega coordenadas al pasar el cursor ---\n            enabled: true\n        },\n        scales: {\n            xAxes: [{\n                type: 'linear',\n                id: 'custom-x-axis',\n                position:'bottom',\n                padding:100,\n                gridLines:{\n                    color:gridcolors,\n                    zeroLineColor:'rgba(123, 113, 113, 0.75)',\n                    // --- Longitud de pequeñas lineas que\n                    // salen del eje horizontal hacia abajo\n                    // alineadas con las acotaciones y las\n                    // lineas de cuadricula verticales\n                    tickMarkLength:3, // 7,\n                    drawTicks:true\n                },\n                ticks: {\n                    // --- Color de acotacion en eje \"x\" ---\n                    fontColor:\"#000\", // \"#ccc\",\n                    // --- Xmin, Xmax ---\n                    max: 1.2, //20,\n                    min: 0,\n                    // --- Cuadricula Lineas Verticales ---\n                    stepSize: 0.2 //5\n                   \n                }\n            }],\n            yAxes: [{\n                id: 'custom-y-axis',\n                \n                gridLines:{\n                    // --- Color de lineas horizontales ---\n                    color:gridcolors,\n                    zeroLineColor:'red',\n                    // --- Longitud de pequeñas lineas que\n                    // salen del eje vertical a la izquierda\n                    // alineadas con las acotaciones y las\n                    // lineas de cuadricula horizontales\n                    tickMarkLength:3, //5,\n                    drawTicks:true // false\n                },\n                ticks: {\n                    // --- Color de acotacion en eje \"y\" ---\n                    fontColor:\"#000\", //\"#ccc\",\n                    // --- Ymin, Ymax ---\n                    max: 1.6, //30,\n                    min: 0, //-10,\n                    // --- Cuadricula Lineas Horizontales\n                    stepSize: 0.4 //5\n                }\n            }]\n       }\n    }\n}\ndelete msg.payload\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 300,
+        "wires": [
+            [
+                "2e7c37b5c9508803"
+            ]
+        ]
+    },
+    {
+        "id": "2e7c37b5c9508803",
+        "type": "ui_chart",
+        "z": "ac492997f0183881",
+        "name": "",
+        "group": "951f5cadc3efb406",
+        "order": 2,
+        "width": "7",
+        "height": "4",
+        "label": "Velocidad: v(t) [m/s]",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "0",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "1.6",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "x": 830,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "10674edc4cceb67a",
+        "type": "mqtt in",
+        "z": "ac492997f0183881",
+        "name": "aceleracion",
+        "topic": "python/mqtt/aceleracion",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "aa3107cbb6f29f72",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 150,
+        "y": 360,
+        "wires": [
+            [
+                "5296742ac1aa240f"
+            ]
+        ]
+    },
+    {
+        "id": "5296742ac1aa240f",
+        "type": "json",
+        "z": "ac492997f0183881",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 330,
+        "y": 360,
+        "wires": [
+            [
+                "a92d119dd67e77a0",
+                "777f8c0303d9dc27"
+            ]
+        ]
+    },
+    {
+        "id": "a92d119dd67e77a0",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "a(t)",
+        "func": "data = msg.payload\n\nmsg.payload = [{\n    \"series\": [\"a(t) [m/s^2] \"],\n    \"xAxisID\": 'custom-x-axis',\n    \"yAxisID\": 'custom-y-axis',\n    \"data\": [data],\n    \"labels\": [\"\"]\n}]\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 360,
+        "wires": [
+            [
+                "394dcb46fb4141f8"
+            ]
+        ]
+    },
+    {
+        "id": "777f8c0303d9dc27",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "Ajuste de Graficas",
+        "func": "// --- Color de lineas de cuadricula ---\nlet gridcolors = 'rgba(0, 0, 0, 0.3)' //'rgba(255, 160, 0, 0.3)'\nmsg.ui_control = {\n    options: {\n        legend: {\n            // --- Cuadro de color de la grafica ---\n            display: false\n        },\n        tooltips: {\n            // --- Despliega coordenadas al pasar el cursor ---\n            enabled: true\n        },\n        scales: {\n            xAxes: [{\n                type: 'linear',\n                id: 'custom-x-axis',\n                position:'bottom',\n                padding:100,\n                gridLines:{\n                    color:gridcolors,\n                    zeroLineColor:'rgba(123, 113, 113, 0.75)',\n                    // --- Longitud de pequeñas lineas que\n                    // salen del eje horizontal hacia abajo\n                    // alineadas con las acotaciones y las\n                    // lineas de cuadricula verticales\n                    tickMarkLength:3, // 7,\n                    drawTicks:true\n                },\n                ticks: {\n                    // --- Color de acotacion en eje \"x\" ---\n                    fontColor:\"#000\", // \"#ccc\",\n                    // --- Xmin, Xmax ---\n                    max: 1.2, //20,\n                    min: 0,\n                    // --- Cuadricula Lineas Verticales ---\n                    stepSize: 0.2 //5\n                   \n                }\n            }],\n            yAxes: [{\n                id: 'custom-y-axis',\n                \n                gridLines:{\n                    // --- Color de lineas horizontales ---\n                    color:gridcolors,\n                    zeroLineColor:'red',\n                    // --- Longitud de pequeñas lineas que\n                    // salen del eje vertical a la izquierda\n                    // alineadas con las acotaciones y las\n                    // lineas de cuadricula horizontales\n                    tickMarkLength:3, //5,\n                    drawTicks:true // false\n                },\n                ticks: {\n                    // --- Color de acotacion en eje \"y\" ---\n                    fontColor:\"#000\", //\"#ccc\",\n                    // --- Ymin, Ymax ---\n                    max: 4.8, //30,\n                    min: 0, //-10,\n                    // --- Cuadricula Lineas Horizontales\n                    stepSize: 1.2 //5\n                }\n            }]\n       }\n    }\n}\ndelete msg.payload\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 400,
+        "wires": [
+            [
+                "394dcb46fb4141f8"
+            ]
+        ]
+    },
+    {
+        "id": "394dcb46fb4141f8",
+        "type": "ui_chart",
+        "z": "ac492997f0183881",
+        "name": "",
+        "group": "951f5cadc3efb406",
+        "order": 3,
+        "width": "7",
+        "height": "4",
+        "label": "Aceleracion: a(t) [m/s^2]",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "0",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "4.8",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "x": 850,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "88f95b7aaa02b853",
+        "type": "ui_slider",
+        "z": "ac492997f0183881",
+        "name": "",
+        "label": "Angulo",
+        "tooltip": "",
+        "group": "c99cd3dc0a4f6e74",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "outs": "end",
+        "topic": "topic",
+        "topicType": "msg",
+        "min": "10",
+        "max": "45",
+        "step": 1,
+        "x": 140,
+        "y": 660,
+        "wires": [
+            [
+                "9a8216f872ded4dc",
+                "4c1f117b2fe4e6d1"
+            ]
+        ]
+    },
+    {
+        "id": "72f865e7dd5f7823",
+        "type": "ui_button",
+        "z": "ac492997f0183881",
+        "name": "Boton Enviar",
+        "group": "c99cd3dc0a4f6e74",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "{{msg.background}}",
+        "icon": "{{msg.icon}}",
+        "payload": "angulo",
+        "payloadType": "global",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 610,
+        "y": 700,
+        "wires": [
+            [
+                "bfce8ebfbe617c6c",
+                "eb9ba8be14c45aac"
+            ]
+        ]
+    },
+    {
+        "id": "bf809128cd10dd6c",
+        "type": "ui_text",
+        "z": "ac492997f0183881",
+        "group": "c99cd3dc0a4f6e74",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "Seleccionar Angulo",
+        "label": "1. Selecciona el ángulo de inclinación del plano inclinado deslizando el \"slider\" inferior en el intervalo de 10° a 45°.",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "x": 170,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "b5468484dc391433",
+        "type": "ui_text",
+        "z": "ac492997f0183881",
+        "group": "c99cd3dc0a4f6e74",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "name": "Presionar Boton",
+        "label": "2. Presiona el botón inferior para iniciar el experimento remoto",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 620,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "00c693886715057a",
+        "type": "ui_text",
+        "z": "ac492997f0183881",
+        "group": "f8ed8ebac0b29524",
+        "order": 2,
+        "width": "7",
+        "height": "3",
+        "name": "Bienvenida",
+        "label": "Bienvenido al LABORATORIO REMOTO DE FISICA EXPERIMENTAL. Aquí podrás experimentar de manera remota con un PLANO INCLINADO, controlando su ángulo de inclinación. Sobre el Plano Inclinado se desliza una esfera de vidrio. Al final del experimento, recibirás las gráficas de comportamiento de la posición, velocidad y aceleración de dicha esfera. De la misma manera recibirás el valor del coeficiente de fricción dinámica obtenido.",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 150,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "9a8216f872ded4dc",
+        "type": "ui_gauge",
+        "z": "ac492997f0183881",
+        "name": "Angulo Gráfico",
+        "group": "c99cd3dc0a4f6e74",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Angulo",
+        "label": "°",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "180",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "45",
+        "seg2": "135",
+        "x": 340,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "bfce8ebfbe617c6c",
+        "type": "mqtt out",
+        "z": "ac492997f0183881",
+        "name": "angulo",
+        "topic": "python/mqtt/angulo",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "aa3107cbb6f29f72",
+        "x": 790,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "4c1f117b2fe4e6d1",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "",
+        "func": "global.set(\"angulo\", msg.payload)\nmsg.icon = \"directions\";\nmsg.label = \"INICIAR EXPERIMENTO REMOTO\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 700,
+        "wires": [
+            [
+                "72f865e7dd5f7823"
+            ]
+        ]
+    },
+    {
+        "id": "eb9ba8be14c45aac",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "",
+        "func": "msg.background = \"gray\"\nmsg.icon = \"send\";\nmsg.label = \"ENVIANDO SOLICITUD\";\nmsg.enabled = false;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 640,
+        "wires": [
+            [
+                "72f865e7dd5f7823"
+            ]
+        ]
+    },
+    {
+        "id": "ecc6cc184b237bf8",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "0",
+        "func": "if (msg.payload === 0 || msg.payload === 1 || msg.payload === 2 || msg.payload === 3 || msg.payload === 4 || msg.payload === 5 || msg.payload === 6){16\n    msg.enabled = true;\n    msg.background = \"orange\";\n    msg.icon = \"check\";\n    return msg;\n} else {\n    msg.icon = \"timer\";\n    msg.enabled = false;\n    return msg; \n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 820,
+        "wires": [
+            [
+                "2b3f2fbbeafaf86f"
+            ]
+        ]
+    },
+    {
+        "id": "477c3de431d423c8",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "1",
+        "func": "if (msg.payload === 1){\n    msg.enabled = true;\n    msg.background = \"green\";\n    msg.icon = \"timer\";\n    return msg;\n} else if (msg.payload === 8){\n    msg.icon = \"timer\";\n    msg.enabled = false;\n    return msg;\n} else {\n    msg.background = \"gray\";\n    msg.icon = \"check\";\n    msg.enabled = false;\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 860,
+        "wires": [
+            [
+                "4f737ca3ef4d806e"
+            ]
+        ]
+    },
+    {
+        "id": "2b3f2fbbeafaf86f",
+        "type": "ui_button",
+        "z": "ac492997f0183881",
+        "name": "",
+        "group": "24cc96069aa32d62",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Sistema Activado",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "{{msg.background}}",
+        "icon": "{{msg.icon}}",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 630,
+        "y": 820,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4f737ca3ef4d806e",
+        "type": "ui_button",
+        "z": "ac492997f0183881",
+        "name": "",
+        "group": "24cc96069aa32d62",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Recibiendo SOLICITUD",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "{{msg.background}}",
+        "icon": "{{msg.icon}}",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 650,
+        "y": 860,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c3d7cf0e72dab5b1",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "2",
+        "func": "if (msg.payload === 2){\n    msg.enabled = true;\n    msg.background = \"green\";\n    msg.icon = \"timer\";\n    return msg;\n} else if (msg.payload === 8){\n    msg.icon = \"timer\";\n    msg.enabled = false;\n    return msg;\n} else {\n    msg.background = \"gray\";\n    msg.icon = \"check\";\n    msg.enabled = false;\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 900,
+        "wires": [
+            [
+                "510b17b295df23e2"
+            ]
+        ]
+    },
+    {
+        "id": "7d352b5eb81f4426",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "3",
+        "func": "if (msg.payload === 3){\n    msg.enabled = true;\n    msg.background = \"green\";\n    msg.icon = \"timer\";\n    return msg;\n} else if (msg.payload === 8){\n    msg.icon = \"timer\";\n    msg.enabled = false;\n    return msg;\n} else {\n    msg.background = \"gray\";\n    msg.icon = \"check\";\n    msg.enabled = false;\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 940,
+        "wires": [
+            [
+                "f2a4123bcd99ff77"
+            ]
+        ]
+    },
+    {
+        "id": "b8cede7d9aa646cf",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "4",
+        "func": "if (msg.payload === 4){\n    msg.enabled = true;\n    msg.background = \"green\";\n    msg.icon = \"timer\";\n    return msg;\n} else if (msg.payload === 8){\n    msg.icon = \"timer\";\n    msg.enabled = false;\n    return msg;\n} else {\n    msg.background = \"gray\";\n    msg.icon = \"check\";\n    msg.enabled = false;\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 980,
+        "wires": [
+            [
+                "e5c25d64aeeed2ba"
+            ]
+        ]
+    },
+    {
+        "id": "3f76e3eb695dd69e",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "5",
+        "func": "if (msg.payload === 5){\n    msg.enabled = true;\n    msg.background = \"green\";\n    msg.icon = \"timer\";\n    return msg;\n} else if (msg.payload === 8){\n    msg.icon = \"timer\";\n    msg.enabled = false;\n    return msg;\n} else {\n    msg.background = \"gray\";\n    msg.icon = \"check\";\n    msg.enabled = false;\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1020,
+        "wires": [
+            [
+                "11354cd4b65f4d4b"
+            ]
+        ]
+    },
+    {
+        "id": "510b17b295df23e2",
+        "type": "ui_button",
+        "z": "ac492997f0183881",
+        "name": "",
+        "group": "24cc96069aa32d62",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Incializando EXPERIMENTO",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "{{msg.background}}",
+        "icon": "{{msg.icon}}",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 660,
+        "y": 900,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f2a4123bcd99ff77",
+        "type": "ui_button",
+        "z": "ac492997f0183881",
+        "name": "",
+        "group": "24cc96069aa32d62",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Posicionando el PLANO en 0 grados",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "{{msg.background}}",
+        "icon": "{{msg.icon}}",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 690,
+        "y": 940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e5c25d64aeeed2ba",
+        "type": "ui_button",
+        "z": "ac492997f0183881",
+        "name": "",
+        "group": "24cc96069aa32d62",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Ajustando el Angulo SOLICITADO",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "{{msg.background}}",
+        "icon": "{{msg.icon}}",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 680,
+        "y": 980,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "11354cd4b65f4d4b",
+        "type": "ui_button",
+        "z": "ac492997f0183881",
+        "name": "",
+        "group": "24cc96069aa32d62",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Capturando posiciones de la ESFERA",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "{{msg.background}}",
+        "icon": "{{msg.icon}}",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 690,
+        "y": 1020,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6c38075e4ed334c1",
+        "type": "ui_button",
+        "z": "ac492997f0183881",
+        "name": "",
+        "group": "24cc96069aa32d62",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Experimento FINALIZADO",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "{{msg.background}}",
+        "icon": "{{msg.icon}}",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 660,
+        "y": 1060,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ad240d35b5f15836",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "6",
+        "func": "if (msg.payload === 6){\n    msg.enabled = true;\n    msg.background = \"green\";\n    msg.icon = \"check\";\n    return msg;\n} else if (msg.payload === 8){\n    msg.icon = \"timer\";\n    msg.enabled = false;\n    return msg;\n} else {\n    msg.background = \"gray\";\n    msg.icon = \"check\";\n    msg.enabled = false;\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1060,
+        "wires": [
+            [
+                "6c38075e4ed334c1"
+            ]
+        ]
+    },
+    {
+        "id": "01cfa04946fb550a",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "6",
+        "func": "if (msg.payload === 6 || msg.payload === 0){\n    msg.enabled = true;\n    msg.icon = \"directions\";\n    msg.label = \"INICIAR EXPERIMENTO REMOTO\";\n    return msg;\n} else {\n    msg.background = \"gray\";\n    msg.icon = \"send\";\n    msg.enabled = false;\n    msg.label = \"ENVIANDO SOLICITUD\";\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 780,
+        "wires": [
+            [
+                "72f865e7dd5f7823"
+            ]
+        ]
+    },
+    {
+        "id": "0572a16d36bc8d50",
+        "type": "ui_text",
+        "z": "ac492997f0183881",
+        "group": "f8ed8ebac0b29524",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "INTEGRANTES DEL EQUIPO:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 430,
+        "y": 560,
+        "wires": [],
+        "info": "Hola aqui"
+    },
+    {
+        "id": "80cafe7f89d2263b",
+        "type": "ui_text",
+        "z": "ac492997f0183881",
+        "group": "f8ed8ebac0b29524",
+        "order": 9,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Eduardo Rodríguez Martínez | Fernando Ramírez Rojas",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 790,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "b75d5dddef33d2a5",
+        "type": "ui_button",
+        "z": "ac492997f0183881",
+        "name": "",
+        "group": "f8ed8ebac0b29524",
+        "order": 7,
+        "width": "0",
+        "height": "0",
+        "passthru": false,
+        "label": "  - UAM - Azcapotzalco",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "#CD032E",
+        "icon": "school",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 180,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ea022bda4317546d",
+        "type": "mqtt in",
+        "z": "ac492997f0183881",
+        "name": "",
+        "topic": "python/mqtt/info",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "aa3107cbb6f29f72",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 140,
+        "y": 1220,
+        "wires": [
+            [
+                "f762d5b7b74e19e7"
+            ]
+        ]
+    },
+    {
+        "id": "f762d5b7b74e19e7",
+        "type": "json",
+        "z": "ac492997f0183881",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 290,
+        "y": 1220,
+        "wires": [
+            [
+                "93ea50e17d7ee84d",
+                "c5237ac38f66b939"
+            ]
+        ]
+    },
+    {
+        "id": "93ea50e17d7ee84d",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "fecha del experimento",
+        "func": "msg.payload = msg.payload.fecha;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 1200,
+        "wires": [
+            [
+                "dc7421aadf33e1e0"
+            ]
+        ]
+    },
+    {
+        "id": "dc7421aadf33e1e0",
+        "type": "ui_text",
+        "z": "ac492997f0183881",
+        "group": "24cc96069aa32d62",
+        "order": 10,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Fecha:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 670,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "c50a81b43b3cca22",
+        "type": "ui_text",
+        "z": "ac492997f0183881",
+        "group": "24cc96069aa32d62",
+        "order": 11,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Coeficiente de Fricción Dinámica:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 760,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "c5237ac38f66b939",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "coeficiente friccion",
+        "func": "msg.payload = msg.payload.u;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 1240,
+        "wires": [
+            [
+                "c50a81b43b3cca22"
+            ]
+        ]
+    },
+    {
+        "id": "3d9c8b69e25bdc17",
+        "type": "ui_button",
+        "z": "ac492997f0183881",
+        "name": "",
+        "group": "24cc96069aa32d62",
+        "order": 9,
+        "width": "0",
+        "height": "0",
+        "passthru": false,
+        "label": "Información del Experimento",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "orange",
+        "icon": "{{msg.icon}}",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 740,
+        "y": 1160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d2e4949d95cdc0ed",
+        "type": "ui_text",
+        "z": "ac492997f0183881",
+        "group": "f8ed8ebac0b29524",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Longitud del Plano Inclinado: 0.38 m | Material del Plano Inclinado: Policarbonato | Diámetro de la Esfera: 1.39 cm | Peso de la Esfera: 3.95 gr | Materal de la Esfera: Vidrio",
+        "format": "",
+        "layout": "row-spread",
+        "x": 640,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "a77328aa5a6fcddf",
+        "type": "ui_text",
+        "z": "ac492997f0183881",
+        "group": "f8ed8ebac0b29524",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "INFORMACION GENERAL DEL SISTEMA:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 440,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "fae290e0560d7c7d",
+        "type": "function",
+        "z": "ac492997f0183881",
+        "name": "6",
+        "func": "if (msg.payload === 6){\n    msg.enabled = true;\n    msg.background = \"green\";\n    msg.icon = \"check\";\n    return msg;\n} else {\n    msg.background = \"gray\";\n    msg.icon = \"timer\";\n    msg.enabled = false;\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1100,
+        "wires": [
+            [
+                "3d9c8b69e25bdc17"
+            ]
+        ]
+    },
+    {
+        "id": "d14f0555997141c2",
+        "type": "inject",
+        "z": "ac492997f0183881",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "8",
+        "payloadType": "num",
+        "x": 250,
+        "y": 980,
+        "wires": [
+            [
+                "ecc6cc184b237bf8",
+                "fae290e0560d7c7d",
+                "477c3de431d423c8",
+                "c3d7cf0e72dab5b1",
+                "7d352b5eb81f4426",
+                "b8cede7d9aa646cf",
+                "3f76e3eb695dd69e",
+                "ad240d35b5f15836"
+            ]
+        ]
+    },
+    {
+        "id": "fffa87bd4f927af2",
+        "type": "ui_spacer",
+        "z": "ac492997f0183881",
+        "name": "spacer",
+        "group": "f8ed8ebac0b29524",
+        "order": 1,
+        "width": "7",
+        "height": "1"
+    },
+    {
+        "id": "02fdd7eca61d1775",
+        "type": "ui_spacer",
+        "z": "ac492997f0183881",
+        "name": "spacer",
+        "group": "c99cd3dc0a4f6e74",
+        "order": 1,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "a5cf2c052bb46bf7",
+        "type": "ui_spacer",
+        "z": "ac492997f0183881",
+        "name": "spacer",
+        "group": "c99cd3dc0a4f6e74",
+        "order": 5,
+        "width": "7",
+        "height": "1"
+    },
+    {
+        "id": "8b1e9bf8d86ea274",
+        "type": "ui_spacer",
+        "z": "ac492997f0183881",
+        "name": "spacer",
+        "group": "24cc96069aa32d62",
+        "order": 8,
+        "width": "6",
+        "height": 1
+    },
+    {
+        "id": "f927e1979b5da633",
+        "type": "ui_spacer",
+        "z": "ac492997f0183881",
+        "name": "spacer",
+        "group": "f8ed8ebac0b29524",
+        "order": 3,
+        "width": "7",
+        "height": 1
+    },
+    {
+        "id": "84a55eaad1e3ec6a",
+        "type": "ui_spacer",
+        "z": "ac492997f0183881",
+        "name": "spacer",
+        "group": "f8ed8ebac0b29524",
+        "order": 6,
+        "width": "7",
+        "height": 1
+    },
+    {
+        "id": "c7a27394.057878",
+        "type": "ui_group",
+        "name": "Experimento",
+        "tab": "b798ce3a20750c59",
+        "order": 2,
+        "disp": true,
+        "width": "9",
+        "collapse": false
+    },
+    {
+        "id": "aa3107cbb6f29f72",
+        "type": "mqtt-broker",
+        "name": "MQTT-Plano_Inclinado",
+        "broker": "3.126.191.185",
+        "port": "1883",
+        "clientid": "Plano-Inclinado",
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "951f5cadc3efb406",
+        "type": "ui_group",
+        "name": "GRAFICAS OBTENIDAS",
+        "tab": "681cf3ecf1f4d037",
+        "order": 4,
+        "disp": true,
+        "width": "7",
+        "collapse": false
+    },
+    {
+        "id": "c99cd3dc0a4f6e74",
+        "type": "ui_group",
+        "name": "INSTRUCCIONES:",
+        "tab": "681cf3ecf1f4d037",
+        "order": 3,
+        "disp": true,
+        "width": "7",
+        "collapse": false
+    },
+    {
+        "id": "f8ed8ebac0b29524",
+        "type": "ui_group",
+        "name": "Bienvenido !!",
+        "tab": "681cf3ecf1f4d037",
+        "order": 1,
+        "disp": true,
+        "width": "7",
+        "collapse": false
+    },
+    {
+        "id": "24cc96069aa32d62",
+        "type": "ui_group",
+        "name": "ESTADO DEL EXPERIMENTO",
+        "tab": "681cf3ecf1f4d037",
+        "order": 5,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "b798ce3a20750c59",
+        "type": "ui_tab",
+        "name": "Plano Inclinado 100",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "681cf3ecf1f4d037",
+        "type": "ui_tab",
+        "name": "LABORATORIO REMOTO DE FISICA EXPERIMENTAL          >>>  PLANO INCLINADO <<<",
+        "icon": "school",
+        "disabled": false,
+        "hidden": false
+    }
+]
