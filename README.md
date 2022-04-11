@@ -1,4 +1,5 @@
-# Proyecto-Capstone
+# Proyecto-Capstone![Plano Inclinado 1](https://user-images.githubusercontent.com/87343531/162834778-9a17a02b-d532-41c6-ab68-21092eed8b69.jpg)
+
 En este repositorio se encuentra la documentación y programas de desarrollo de un experimento de física consistente en el manejo de un plano inclinado con acceso remoto, como proyecto desarrollado para el Diplomado de IoT de Samsung Innovation Campus 2021/2022
 
 RESUMEN
